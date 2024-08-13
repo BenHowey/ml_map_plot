@@ -64,7 +64,7 @@ for month in df['month_datetime'].unique():
                 zmin=df['ML model output'].min(),
                 zmax=df['ML model output'].max(),
                 name='Choropleth',
-                visible=True
+                visible=True,
             ),
             # Add the scatter points for this specific month
             go.Scattermapbox(
@@ -73,8 +73,10 @@ for month in df['month_datetime'].unique():
                 mode='markers',
                 marker=dict(size=10, color='red'),
                 name='Incidents',
-                text=incidents_filtered['Date_of_Launch'].dt.strftime('%Y-%m-%d'),
-                hoverinfo='text'
+                text=incidents_filtered.apply(lambda row: f"Date: {row['Date_of_Launch'].strftime('%Y-%m-%d')}<br>"
+                                              f"Type: {row['ReasonforLaunch']}<br>"
+                                              f"Location: {row['LifeboatClass']}", axis=1),
+                hoverinfo='text',
             )
         ],
         name=str(month)
@@ -96,7 +98,7 @@ fig.add_trace(go.Choroplethmapbox(
     marker_opacity=0.5,
     zmin=df['ML model output'].min(),
     zmax=df['ML model output'].max(),
-    name='Choropleth',
+    name='Choropleth'
 ))
 
 # Add the initial scatter points (for the first month)
@@ -107,7 +109,9 @@ fig.add_trace(go.Scattermapbox(
     mode='markers',
     marker=dict(size=10, color='red'),
     name='Incidents',
-    text=initial_incidents['Date_of_Launch'].dt.strftime('%Y-%m-%d'),
+    text=incidents_filtered.apply(lambda row: f"Date: {row['Date_of_Launch'].strftime('%Y-%m-%d')}<br>"
+                                              f"Type: {row['ReasonforLaunch']}<br>"
+                                              f"Location: {row['LifeboatClass']}", axis=1),
     hoverinfo='text'
 ))
 
